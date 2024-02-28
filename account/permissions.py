@@ -9,8 +9,8 @@ from account import managers
 # - Only object owner or admin can Update or Delete
 class UserPermissions(permissions.BasePermission):
     def has_permission(self, request, view) -> bool:
-        is_admin: bool = \
-            request.user.is_superuser or request.user.is_staff
+        is_admin: bool = request.user.is_superuser \
+            or request.user.is_staff
         
         update_methods: List[str] \
             = request.method in ['PUT', 'PATCH', 'DELETE']
@@ -32,8 +32,8 @@ class UserPermissions(permissions.BasePermission):
 # - Only object owner or admin can Update or Delete       
 class UserAdressPermissions(permissions.BasePermission):
     def has_permission(self, request, view) -> bool:
-        is_admin: bool = \
-            request.user.is_superuser or request.user.is_staff
+        is_admin: bool = request.user.is_superuser \
+            or request.user.is_staff
         
         update_methods: List[str] \
             = request.method in ['PUT', 'PATCH', 'DELETE']
