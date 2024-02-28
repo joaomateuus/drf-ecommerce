@@ -54,6 +54,38 @@ class ProductCategory(ModelBase):
         db_table = 'tb_product_category'
 
 
+class ProductSubCategory(ModelBase):
+    name = models.CharField(
+        db_column='tx_name',
+        max_length=50,
+        null=False,
+        blank=False,
+        verbose_name='Name'
+    )
+    description = models.TextField(
+        db_column='tx_description',
+        null=True,
+        blank=True,
+        verbose_name='Description'
+    )
+    parent_category = models.ForeignKey(
+        'ProductCategory',
+        on_delete=models.CASCADE,
+        db_column='id_parent_category',
+        db_index=False,
+        null=True,
+        related_name='subcategory_categories',
+        verbose_name='Parent Category'
+    )
+    
+    def __str__(self) -> str:
+        return f'{self.name} - {self.parent_category.name}'
+    
+    class Meta:
+        managed = True
+        db_table = 'tb_products_subcategory'
+
+
 class Product(ModelBase):
     class Availability(models.TextChoices):
         AVAILABLE = 'A', ('Available')
@@ -85,14 +117,15 @@ class Product(ModelBase):
         blank=True,
         verbose_name='Sku',
     )
-    category = models.ForeignKey(
-        'ProductCategory',
-        on_delete=models.DO_NOTHING,
-        db_column='id_product_category',
+    subcategory = models.ForeignKey(
+        'ProductSubCategory',
+        on_delete=models.SET_NULL,
+        db_column='id_product_subcategory',
         db_index=False,
-        null=False,
-        related_name='product_categories',
-        verbose_name='Product Category'
+        null=True,
+        blank=True,
+        related_name='product_subcategories',
+        verbose_name='Product Sub Category'
     )
     price = models.FloatField(
         db_column='nb_price',
