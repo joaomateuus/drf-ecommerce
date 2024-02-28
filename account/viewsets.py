@@ -38,6 +38,15 @@ class UserAdressViewSet(viewsets.ModelViewSet):
         self.queryset = models.UserAdress.objects.filter(user=self.request.user.id)
         return super().get_queryset()
     
+    def create(self, request, *args, **kwargs):
+        is_admin: bool = self.request.user.is_superuser \
+            or self.request.user.is_staff
+            
+        if not is_admin:
+            request.data['user'] = request.user.id
+        
+        return super().create(request, *args, **kwargs)
+    
 
         
 
