@@ -45,6 +45,9 @@ class ProductCategory(ModelBase):
         blank=True,
         verbose_name='Name'
     )
+    
+    def __str__(self) -> str:
+        return f'{self.name}'
 
     class Meta:
         managed = True
@@ -52,6 +55,10 @@ class ProductCategory(ModelBase):
 
 
 class Product(ModelBase):
+    class Availability(models.TextChoices):
+        AVAILABLE = 'A', ('Available')
+        UNAVAILABLE = 'U', ('Unavailable')
+    
     name = models.CharField(
         db_column='tx_name',
         max_length=50,
@@ -65,11 +72,17 @@ class Product(ModelBase):
         blank=True,
         verbose_name='Description'
     )
+    availability = models.CharField(
+        max_length=1,
+        null=False,
+        blank=True,
+        choices=Availability.choices
+    )
     sku = models.CharField(
         db_column='tx_sku',
         max_length=100,
         null=False,
-        blank=False,
+        blank=True,
         verbose_name='Sku',
     )
     category = models.ForeignKey(
@@ -102,7 +115,17 @@ class Product(ModelBase):
     def save(self, *args, **kwargs):
         if not self.sku:
             self.sku = self.generate_sku()
+        
+        if self.quantity > 0:
+            self.availability = self.Availability.AVAILABLE
+        else:
+            self.availability = self.Availability.UNAVAILABLE
+        
+            
         super().save(*args, **kwargs)
+        
+    def __str__(self) -> str:
+        return f'{self.name} - {self.sku}'
 
     class Meta:
         managed = True
