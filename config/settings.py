@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'account.apps.AccountConfig',
     'core.apps.CoreConfig',
-    'oauth2_provider'
+    'oauth2_provider',
+    'django_filters'
 ]
 
 MIDDLEWARE = [
@@ -60,6 +61,7 @@ REST_FRAMEWORK = {
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
 AUTHENTICATION_BACKENDS = (

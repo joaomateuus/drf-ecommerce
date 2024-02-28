@@ -1,0 +1,8 @@
+EXACT = 'exact'
+IN = 'in'
+LT = 'lt'
+GT = 'gt'
+LTE = 'lte'
+GTE = 'gte'
+NULL = 'isnull'
+ICONTAINS = 'icontains'
