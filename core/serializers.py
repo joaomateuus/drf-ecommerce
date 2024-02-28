@@ -7,7 +7,13 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 
+class ProductSubCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ProductSubCategory
+        fields = '__all__'
+
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Product
         fields = '__all__'
+    

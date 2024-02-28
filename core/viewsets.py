@@ -7,6 +7,12 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
     queryset = models.ProductCategory.objects.all()
     serializer_class = serializers.ProductCategorySerializer
     permission_classes = [permissions.IsAdminUser,]
+    
+
+class ProductSubCategoryViewSet(viewsets.ModelViewSet):
+    queryset = models.ProductSubCategory.objects.all()
+    serializer_class = serializers.ProductSubCategorySerializer
+    permission_classes = [permissions.IsAdminUser,]
 
 
 class ProductViewSet(viewsets.ModelViewSet):
