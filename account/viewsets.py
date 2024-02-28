@@ -3,7 +3,7 @@ from account import models
 from account import serializers
 from account import permissions
 from account import filters as account_filters
-from django_filters import rest_framework as filters
+from account.pagination import BasePagination
 
 # criar enpoint para criar usuario com endereço
 # criar endpoint para mudar de senha
@@ -13,6 +13,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.UserSerializer
     filterset_class = account_filters.UserFilter
     permission_classes = [permissions.UserPermissions,]
+    pagination_class = BasePagination
 
     def get_queryset(self):
         is_admin: bool = self.request.user.is_superuser \
@@ -31,6 +32,7 @@ class UserAdressViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.UserAdress
     filterset_class = account_filters.UserAdressFilter
     permission_classes = [permissions.UserAdressPermissions,]
+    pagination_class = BasePagination
     
     def get_queryset(self):
         is_admin: bool = self.request.user.is_superuser \
