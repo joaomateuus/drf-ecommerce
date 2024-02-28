@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0001_product_model'),
+        ('core', '0001_create_product_model'),
     ]
 
     operations = [

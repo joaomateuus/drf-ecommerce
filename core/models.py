@@ -86,6 +86,23 @@ class ProductSubCategory(ModelBase):
         db_table = 'tb_products_subcategory'
 
 
+class Brand(ModelBase):
+    name = models.CharField(
+        db_column='tx_name',
+        max_length=50,
+        null=False,
+        blank=False,
+        verbose_name='Name'
+    )
+    
+    def __str__(self) -> str:
+        return f'{self.name}'
+
+    class Meta:
+        managed = True
+        db_table = 'tb_brand'
+
+
 class Product(ModelBase):
     class Availability(models.TextChoices):
         AVAILABLE = 'A', ('Available')
@@ -126,6 +143,16 @@ class Product(ModelBase):
         blank=True,
         related_name='product_subcategories',
         verbose_name='Product Sub Category'
+    )
+    brand = models.ForeignKey(
+        'Brand',
+        on_delete=models.SET_NULL,
+        db_column='id_brand',
+        db_index=False,
+        null=True,
+        blank=True,
+        related_name='product_brands',
+        verbose_name='Product Brand'
     )
     price = models.FloatField(
         db_column='nb_price',
