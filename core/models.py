@@ -166,6 +166,13 @@ class Product(ModelBase):
         blank=False,
         verbose_name='Quantity'
     )
+    image_url = models.CharField(
+        db_column='tx_image_url',
+        max_length=250,
+        null=True,
+        blank=True,
+        verbose_name='Image Url'
+    )
 
     def generate_sku(self):
         sku_base = f"{self.category.name}-{self.name[:3]}-{self.price:.2f}"
