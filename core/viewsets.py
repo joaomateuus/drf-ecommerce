@@ -15,6 +15,12 @@ class ProductSubCategoryViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser,]
 
 
+class BrandViewSet(viewsets.ModelViewSet):
+    queryset = models.Brand.objects.all()
+    serializer_class = serializers.BrandSerializer
+    permission_classes = [permissions.IsAdminUser,]
+
+
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = models.Product.objects.all()
     serializer_class = serializers.ProductSerializer
