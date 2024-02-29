@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'core.apps.CoreConfig',
     'oauth2_provider',
-    'django_filters'
+    'django_filters',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

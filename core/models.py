@@ -43,7 +43,7 @@ class ProductCategory(ModelBase):
         db_column='tx_description',
         null=True,
         blank=True,
-        verbose_name='Name'
+        verbose_name='Description'
     )
     
     def __str__(self) -> str:
@@ -51,7 +51,7 @@ class ProductCategory(ModelBase):
 
     class Meta:
         managed = True
-        db_table = 'tb_product_category'
+        db_table = 'tb_products_categories'
 
 
 class ProductSubCategory(ModelBase):
@@ -83,7 +83,7 @@ class ProductSubCategory(ModelBase):
     
     class Meta:
         managed = True
-        db_table = 'tb_products_subcategory'
+        db_table = 'tb_products_sub_categories'
 
 
 class Brand(ModelBase):
@@ -100,7 +100,7 @@ class Brand(ModelBase):
 
     class Meta:
         managed = True
-        db_table = 'tb_brand'
+        db_table = 'tb_brands'
 
 
 class Product(ModelBase):
@@ -175,13 +175,16 @@ class Product(ModelBase):
     )
 
     def generate_sku(self):
-        sku_base = f"{self.category.name}-{self.name[:3]}-{self.price:.2f}"
         sku_uuid = str(uuid.uuid4().hex)[:8]
-        return f"{sku_base}-{sku_uuid}"
+        prefix = f"{self.subcategory.parent_category.name}-{sku_uuid}"
+        
+        sku_uuid =  str(uuid.uuid4().hex)[8:16]
+        sufix = f'{self.name[:3]}{self.price:.2f}-{sku_uuid}'
+        
+        return f"{prefix}{sufix}"
     
     def save(self, *args, **kwargs):
-        if not self.sku:
-            self.sku = self.generate_sku()
+        self.sku = self.generate_sku()
         
         if self.quantity > 0:
             self.availability = self.Availability.AVAILABLE

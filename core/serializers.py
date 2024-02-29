@@ -20,30 +20,15 @@ class BrandSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    subcategory_obj = serializers.SerializerMethodField()
-    brand_obj = serializers.SerializerMethodField()
-    
-    subcategory = serializers.PrimaryKeyRelatedField(
+    category = serializers.CharField(source='subcategory.parent_category.name')
+    subcategory = serializers.CharField(source='subcategory.name')
+    brand = serializers.CharField(source='brand.name')
+    category_id = serializers.CharField(source='subcategory.parent_category.id')
+    brand_id = serializers.PrimaryKeyRelatedField(queryset=models.Brand.objects.all())    
+    subcategory_id = serializers.PrimaryKeyRelatedField(
         queryset=models.ProductSubCategory.objects.all()
     )
-    brand = serializers.PrimaryKeyRelatedField(
-        queryset=models.Brand.objects.all()
-    )    
-        
-    def get_subcategory_obj(self, obj):
-        if obj.subcategory:
-            return {
-                "name": obj.subcategory.name,
-                "description": obj.subcategory.description
-            }
-    
-    def get_brand_obj(self, obj):
-        if obj.brand:
-            return {
-                "name": obj.brand.name
-            }
-    
-    
+
     class Meta:
         model = models.Product
         fields = '__all__'
