@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from core import serializers
 from core import models
 from rest_framework import permissions
+from core import filters
 
 class ProductCategoryViewSet(viewsets.ModelViewSet):
     queryset = models.ProductCategory.objects.all()
@@ -24,4 +25,5 @@ class BrandViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = models.Product.objects.all()
     serializer_class = serializers.ProductSerializer
+    filterset_class = filters.ProductFilter
     permission_classes = [permissions.IsAdminUser,]
