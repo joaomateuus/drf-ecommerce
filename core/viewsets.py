@@ -45,13 +45,6 @@ class ProductShowCaseViewSet(generics.ListAPIView, viewsets.GenericViewSet):
     filterset_class = filters.ProductFilter
     permission_classes = [permissions.AllowAny,]
     pagination_class = BasePagination
-
-    def get_queryset(self):
-        self.queryset = models.Product.objects.filter(
-            availability=models.Product.Availability.AVAILABLE
-        )
-
-        return super().get_queryset()
     
     
 class OrderItemViewSet(viewsets.ModelViewSet):
