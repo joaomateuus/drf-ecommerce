@@ -30,11 +30,11 @@ class OrderActions:
         difference = instance.quantity - old_instance.quantity
             
         if instance.quantity > old_instance.quantity:     
-            instance.product.quantity += abs(difference)
+            instance.product.quantity -= abs(difference)
             instance.product.save()
             return
         
-        instance.product.quantity -= abs(difference)
+        instance.product.quantity += abs(difference)
         instance.product.save()
         return 
            
