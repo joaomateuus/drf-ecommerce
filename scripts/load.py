@@ -45,7 +45,6 @@ class PopulateDb:
                 product_img_url = game.get('image_url')
                 price = game.get('price')
                 quantity = random.randint(100, 1000)
-                # product_sku = game.get('sku')
                
                 product = models.Product(
                     subcategory=created_sub_category,

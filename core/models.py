@@ -1,3 +1,4 @@
+from typing import Iterable
 from django.db import models
 import uuid
 
@@ -200,3 +201,98 @@ class Product(ModelBase):
     class Meta:
         managed = True
         db_table = 'tb_products'
+
+
+class OrderItem(ModelBase):
+    user = models.ForeignKey(
+        'account.User',
+        on_delete=models.CASCADE,
+        db_column='id_user',
+        db_index=False,
+        null=False,
+        related_name='user_order_items',
+        verbose_name='User Order Items'
+    )
+    product = models.ForeignKey(
+        'Product',
+        on_delete=models.CASCADE,
+        db_column='id_product',
+        db_index=False,
+        null=False,
+        related_name='ordem_item_product',
+        verbose_name='Order Item Product'
+    )
+    quantity = models.IntegerField(
+        db_column='nb_quantity',
+        null=False,
+        blank=False,
+        default=1,
+        verbose_name='Quantity'
+    )
+    ordered = models.BooleanField(
+        db_column='cs_ordered',
+        null=False,
+        default=False,
+        verbose_name='Ordered'
+    )
+    order_item_price = models.FloatField(
+        db_column='nb_order_item_price',
+        null=True,
+        blank=True,
+        verbose_name='Order Item Price', 
+    )
+
+    def get_total_item_price(self):
+        return self.quantity * self.item.price
+
+    def save(self, *args, **kwargs):
+        self.order_item_price = self.get_total_item_price()
+
+    class Meta:
+        managed = True
+        db_table = 'tb_order_items'
+
+
+class Order(models.Model):
+    class Status(models.TextChoices):
+        PAID = 'PD', ('Paid')
+        WAITING_PAYMENT = 'WP', ('Waiting Payment')
+        REJECTED = 'RJ', ('Rejected')
+
+    user = models.ForeignKey(
+        'account.User',
+        on_delete=models.CASCADE,
+        db_column='id_user',
+        db_index=False,
+        null=False,
+        related_name='user_orders',
+        verbose_name='User'
+    )
+    items = models.ManyToManyField(
+        'Product',
+        related_name='order_products',
+        verbose_name='Order Items'
+    )
+    status = models.CharField(
+        max_length=2,
+        null=False,
+        blank=True,
+        choices=Status.choices,
+        default=Status.WAITING_PAYMENT,
+        verbose_name='Order Status'
+    )
+    total_order_price = models.FloatField(
+        db_column='nb_total_order_price',
+        null=True,
+        blank=True,
+        verbose_name='Total Order Price',
+    )
+
+    def calculate_total_order_price(self):
+        self.total_order_price = sum(
+            item.order_item_price for item in self.items.all()
+        )
+    
+    class Meta:
+        managed = True
+        db_table = 'tb_orders'
