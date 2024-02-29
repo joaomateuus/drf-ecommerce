@@ -32,9 +32,10 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Product
         fields = '__all__'
-
-
+        
+        
 class OrderItemSerializer(serializers.ModelSerializer):
+    ordered = serializers.BooleanField(read_only=True)
     order_item_price = serializers.FloatField(read_only=True)
 
     class Meta:

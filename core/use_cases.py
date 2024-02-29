@@ -9,21 +9,25 @@ class OrderUseCase:
         self.quantity = quantity
 
     def main(self) -> 'models.Order':
-        with transaction.atomic():
-            order_item = models.OrderItem.objects.create(
-                user=self.user,
-                product=self.product,
-                quantity=self.quantity
-            ) 
+        try:
+            with transaction.atomic():
+                order_item = models.OrderItem.objects.create(
+                    user=self.user,
+                    product=self.product,
+                    quantity=self.quantity
+                ) 
+                
+                order, _ = models.Order.objects.get_or_create(
+                    user=self.user,
+                )
+                order.items.add(order_item.id)
+                
+                total_order_price = sum(item.order_item_price for item in order.items.all())
+                order.total_order_price = total_order_price
+                order.save()
+            return order
+        except Exception as e:
+            print(str(e))
             
-            order, _ = models.Order.objects.get_or_create(
-                user=self.user,
-            )
-            order.items.add(order_item.id)
-            
-            total_order_price = sum(item.order_item_price for item in order.items.all())
-            order.total_order_price = total_order_price
-            order.save()
-            
-        return order
+        
             

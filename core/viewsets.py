@@ -6,7 +6,6 @@ from rest_framework import permissions
 from core import filters
 from core.pagination import BasePagination
 from rest_framework.response import Response
-from core import request_validator
 from core import use_cases
 
 class ProductCategoryViewSet(viewsets.ModelViewSet):
@@ -39,7 +38,9 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 
 class ProductShowCaseViewSet(generics.ListAPIView, viewsets.GenericViewSet):
-    queryset = models.Product.objects.all()
+    queryset = models.Product.objects.filter(
+        availability=models.Product.Availability.AVAILABLE
+    )
     serializer_class = serializers.ProductSerializer
     filterset_class = filters.ProductFilter
     permission_classes = [permissions.AllowAny,]
@@ -51,30 +52,33 @@ class ProductShowCaseViewSet(generics.ListAPIView, viewsets.GenericViewSet):
         )
 
         return super().get_queryset()
-
-
+    
+    
 class OrderItemViewSet(viewsets.ModelViewSet):
     queryset = models.OrderItem.objects.all()
     serializer_class = serializers.OrderItemSerializer
     permission_classes = [permissions.IsAuthenticated,]
+    
+    def create(self, request, *args, **kwargs):
+        try:
+            serializer = self.serializer_class(data=request.data)
+            serializer.is_valid(raise_exception=True)
 
-# criar sinal para fazer update do valor do order item refletir no order
+            order_use_case = use_cases.OrderUseCase(
+                user=serializer.validated_data['user'],
+                product=serializer.validated_data['product'],
+                quantity=serializer.validated_data['quantity']
+            )
+            order = order_use_case.main()
+            order_serializer = serializers.OrderSerializer(order)
+
+            return Response(data=order_serializer.data, status=200)
+        except Exception as e:
+            print(str(e))
+            return Response(data='Was not posible to create an item order', status=400)
+        
+        
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = models.Order.objects.all()
     serializer_class = serializers.OrderSerializer
     permission_classes = [permissions.IsAuthenticated,]
-
-    @action(detail=False, methods=['POST'], serializer_class=request_validator.CreateOrderItemSerializer)
-    def create_order_item(self, request, *args, **kwargs):
-        try:
-            rv = request_validator.CreateOrderItemSerializer(data=request.data)
-            rv.is_valid(raise_exception=True)
-
-            order_use_case = use_cases.OrderUseCase(**rv.validated_data)
-            order = order_use_case.main()
-            serializer = serializers.OrderSerializer(order)
-
-            return Response(data=serializer.data, status=200)
-        except Exception as e:
-            print(str(e))
-            return Response(data='Was not posible to create an item order', status=400)
