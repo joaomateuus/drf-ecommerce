@@ -206,7 +206,7 @@ class Product(ModelBase):
 class OrderItem(ModelBase):
     user = models.ForeignKey(
         'account.User',
-        on_delete=models.CASCADE,
+        on_delete=models.DO_NOTHING,
         db_column='id_user',
         db_index=False,
         null=False,
@@ -215,7 +215,7 @@ class OrderItem(ModelBase):
     )
     product = models.ForeignKey(
         'Product',
-        on_delete=models.CASCADE,
+        on_delete=models.DO_NOTHING,
         db_column='id_product',
         db_index=False,
         null=False,
@@ -243,14 +243,16 @@ class OrderItem(ModelBase):
     )
 
     def get_total_item_price(self):
-        return self.quantity * self.item.price
+        return self.quantity * self.product.price
 
     def save(self, *args, **kwargs):
         self.order_item_price = self.get_total_item_price()
+        
+        super().save(*args, **kwargs)
 
     class Meta:
         managed = True
-        db_table = 'tb_order_items'
+        db_table = 'tb_orderitems'
 
 
 class Order(models.Model):
@@ -261,7 +263,7 @@ class Order(models.Model):
 
     user = models.ForeignKey(
         'account.User',
-        on_delete=models.CASCADE,
+        on_delete=models.DO_NOTHING,
         db_column='id_user',
         db_index=False,
         null=False,
@@ -269,8 +271,8 @@ class Order(models.Model):
         verbose_name='User'
     )
     items = models.ManyToManyField(
-        'Product',
-        related_name='order_products',
+        'OrderItem',
+        related_name='order_items',
         verbose_name='Order Items'
     )
     status = models.CharField(
@@ -288,11 +290,6 @@ class Order(models.Model):
         verbose_name='Total Order Price',
     )
 
-    def calculate_total_order_price(self):
-        self.total_order_price = sum(
-            item.order_item_price for item in self.items.all()
-        )
-    
     class Meta:
         managed = True
         db_table = 'tb_orders'

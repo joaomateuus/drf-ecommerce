@@ -32,4 +32,20 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Product
         fields = '__all__'
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    order_item_price = serializers.FloatField(read_only=True)
+
+    class Meta:
+        model = models.OrderItem
+        fields = '__all__'
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = models.Order
+        fields = '__all__'
     
