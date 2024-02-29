@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'django_filters',
     'django_extensions',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
