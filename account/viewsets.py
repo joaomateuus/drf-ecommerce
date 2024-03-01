@@ -5,9 +5,7 @@ from account import permissions
 from account import filters as account_filters
 from account.pagination import BasePagination
 
-# criar enpoint para criar usuario com endereço
-# criar endpoint para mudar de senha
-# criar enpoint esqueceu senha
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = models.User.objects.all()
     serializer_class = serializers.UserSerializer
