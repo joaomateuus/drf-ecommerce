@@ -111,7 +111,7 @@ class Product(ModelBase):
     
     name = models.CharField(
         db_column='tx_name',
-        max_length=50,
+        max_length=256,
         null=False,
         blank=False,
         verbose_name='Name'
