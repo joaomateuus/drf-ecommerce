@@ -8,18 +8,12 @@ services:
       - 8000:8000
     depends_on:
       - db
+    restart: always
   db:
     image: postgres:14
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
       - "POSTGRES_HOST_AUTH_METHOD=trust"
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: "joao@email.com"
-      PGADMIN_DEFAULT_PASSWORD: "123456"
-    depends_on:
-      - db
 volumes:
   postgres_data:
