@@ -13,8 +13,17 @@
 2 - Entrar no diretorio do projeto
     cd drf-ecommerce
 
-3 - Subir os serviços, api e db com docker compose
+3 - Rodar o docker build para construir a imagem da nossa api
+    docker build .
+
+4 - Subir os serviços, api e db com docker compose
     docker-compose up -d --build
+
+5 - Rodar o migrate para criar nossas tabelas do bd
+    docker-compose exec web python manage.py migrate
+
+6 - Rodar o comando para popular a tabela de produtos e seus relacionamentos
+    docker-compose exec web python manage.py runscript load
 ````
 ### Aguarde até que os contêineres sejam iniciados. Após a conclusão, você poderá acessar a aplicação no navegador:
 - Aplicação Django: http://localhost:8000
